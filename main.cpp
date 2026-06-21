@@ -17,16 +17,9 @@ using namespace std;
 //     {1, ['a', 'b', 'c', 'd', 'e', 'f', 'g']}
 // }; 
 
-void displayBoard() {
-    cout << "[bR] [bN] [bB] [bQ] [bK] [bB] [bN] [bR]" << endl;
-    cout << "[bP] [bP] [bP] [bP] [bP] [bP] [bP] [bP]" << endl;
-    cout << "[  ] [  ] [  ] [  ] [  ] [  ] [  ] [  ]" << endl;
-    cout << "[  ] [  ] [  ] [  ] [  ] [  ] [  ] [  ]" << endl;
-    cout << "[  ] [  ] [  ] [  ] [  ] [  ] [  ] [  ]" << endl;
-    cout << "[  ] [  ] [  ] [  ] [  ] [  ] [  ] [  ]" << endl;
-    cout << "[wP] [wP] [wP] [wP] [wP] [wP] [wP] [wP]" << endl;
-    cout << "[wR] [wN] [wB] [wQ] [wK] [wB] [wN] [wR]" << endl;
-}
+
+
+
 
 string switchPlayer(string player) {
     if (player == "white") {
@@ -36,6 +29,20 @@ string switchPlayer(string player) {
     {
         return "white";
     }
+}
+
+bool checkValidMove(string userResponse) {
+    return true;
+}
+
+string getUserMove() {
+    string userResponse;
+    bool validMove = false;
+    
+    do {
+        validMove = checkValidMove(userResponse);
+        cout << endl;
+    } while (!validMove);
 }
 
 int mainMenu() {
@@ -108,23 +115,44 @@ vector<vector<Piece>> initializeBoard() {
     return board;
 }
 
+void displayBoard(vector<vector<Piece>> board) {
+    cout << "[bR] [bN] [bB] [bQ] [bK] [bB] [bN] [bR]" << endl;
+    cout << "[bP] [bP] [bP] [bP] [bP] [bP] [bP] [bP]" << endl;
+    cout << "[  ] [  ] [  ] [  ] [  ] [  ] [  ] [  ]" << endl;
+    cout << "[  ] [  ] [  ] [  ] [  ] [  ] [  ] [  ]" << endl;
+    cout << "[  ] [  ] [  ] [  ] [  ] [  ] [  ] [  ]" << endl;
+    cout << "[  ] [  ] [  ] [  ] [  ] [  ] [  ] [  ]" << endl;
+    cout << "[wP] [wP] [wP] [wP] [wP] [wP] [wP] [wP]" << endl;
+    cout << "[wR] [wN] [wB] [wQ] [wK] [wB] [wN] [wR]" << endl;
+
+    for (int i = 0; i <= 7; i++) {
+        for (int j = 0; j <= 7; j++) {
+            Piece currentPiece = board[i][j];
+            currentPiece.print();
+        }
+        cout << endl;
+    }
+}
+
+
 int main() {
     //Initialize variables at the start of the game
 
     int stillPlaying = 1;
     string currentPlayer = "white";
-
-    //They call their dictionaries maps in C++, weird.
-    map<int, vector<char>> rows = {
-        { {1}, {'a', 'b', 'c', 'd', 'e', 'f', 'g'} }, 
-        { {2}, {'a', 'b', 'c', 'd', 'e', 'f', 'g'} }, 
-        { {3}, {'a', 'b', 'c', 'd', 'e', 'f', 'g'} }, 
-        { {4}, {'a', 'b', 'c', 'd', 'e', 'f', 'g'} }, 
-        { {5}, {'a', 'b', 'c', 'd', 'e', 'f', 'g'} }, 
-        { {6}, {'a', 'b', 'c', 'd', 'e', 'f', 'g'} }, 
-        { {7}, {'a', 'b', 'c', 'd', 'e', 'f', 'g'} }, 
-        { {8}, {'a', 'b', 'c', 'd', 'e', 'f', 'g'} },   
-    };
+    vector<vector<Piece>> playBoard = initializeBoard();
+    displayBoard(playBoard);
+    // //They call their dictionaries maps in C++, weird.
+    // map<int, vector<char>> rows = {
+    //     { {1}, {'a', 'b', 'c', 'd', 'e', 'f', 'g'} }, 
+    //     { {2}, {'a', 'b', 'c', 'd', 'e', 'f', 'g'} }, 
+    //     { {3}, {'a', 'b', 'c', 'd', 'e', 'f', 'g'} }, 
+    //     { {4}, {'a', 'b', 'c', 'd', 'e', 'f', 'g'} }, 
+    //     { {5}, {'a', 'b', 'c', 'd', 'e', 'f', 'g'} }, 
+    //     { {6}, {'a', 'b', 'c', 'd', 'e', 'f', 'g'} }, 
+    //     { {7}, {'a', 'b', 'c', 'd', 'e', 'f', 'g'} }, 
+    //     { {8}, {'a', 'b', 'c', 'd', 'e', 'f', 'g'} },   
+    // };
 
 
     
