@@ -2,25 +2,14 @@
 #include <string>
 #include <map> //this library includes dictionaries! Call it with map
 #include <vector>
+#include <algorithm>
 #include "Piece.h"
+#include <windows.h>
+
 using namespace std;
 
 
-// { 
-//     {1, ['a', 'b', 'c', 'd', 'e', 'f', 'g']},
-//     {2, ['a', 'b', 'c', 'd', 'e', 'f', 'g']},
-//     {1, ['a', 'b', 'c', 'd', 'e', 'f', 'g']},
-//     {1, ['a', 'b', 'c', 'd', 'e', 'f', 'g']},
-//     {1, ['a', 'b', 'c', 'd', 'e', 'f', 'g']},
-//     {1, ['a', 'b', 'c', 'd', 'e', 'f', 'g']},
-//     {1, ['a', 'b', 'c', 'd', 'e', 'f', 'g']},
-//     {1, ['a', 'b', 'c', 'd', 'e', 'f', 'g']}
-// }; 
-
-
-
-
-
+//Initialize functions
 string switchPlayer(string player) {
     if (player == "white") {
         return "black";
@@ -35,19 +24,80 @@ bool checkValidMove(string userResponse) {
     return true;
 }
 
+/*
+    * Prompts the user to input a move,
+    * then checks to see if that move is valid
+    * by calling checkValidMove with their
+    * response as the input of that function.
+    Input: none
+    Returns: a string in chess notation (kinda)
+*/
 string getUserMove() {
+
     string userResponse;
-    bool validMove = false;
-    
+    bool validMove = true; //TODO: change this to false when we add move logic
+    cout << "Type in your desired move and hit enter" << endl;
+    getline(cin, userResponse);
     do {
         validMove = checkValidMove(userResponse);
         cout << endl;
     } while (!validMove);
+    // cout << "Testing: " << userResponse;
+    return userResponse;
+}
+
+void movePiece(string userMove, vector<vector<Piece>>& board) {
+    // char startingRowChar;
+    // char startingColumnChar;
+    // char endingRowChar;
+    // char endingColumnChar;
+
+    // userMove.erase(remove(userMove.begin(), userMove.end(), ' '), userMove.end());
+    // //Set the values of starting/ending row/column to the inputs from the user
+    // char startingRowChar = userMove[1];
+    // char startingColumnChar = userMove[0];
+    // char endingRowChar = userMove[3];
+    // char endingColumnChar = userMove[2];
+
+    if (userMove.size() < 4) {
+        throw std::invalid_argument("Invalid move string: '" + userMove + "'");
+    }
+
+
+
+    std::string startSquare = userMove.substr(0, 2);
+    std::string endSquare   = userMove.substr(userMove.length() - 2, 2);
+
+    char startingColumnChar = startSquare[0];
+    char startingRowChar    = startSquare[1];
+
+    char endingColumnChar   = endSquare[0];
+    char endingRowChar      = endSquare[1];
+
+    int startingRowInt = startingRowChar - '1';
+    int endingRowInt = endingRowChar - '1';
+
+    int startingColumnInt = startingColumnChar - 'a';
+    int endingColumnInt = endingColumnChar - 'a';
+
+    if (startingRowInt < 0 || startingRowInt > 7 ||
+    endingRowInt < 0 || endingRowInt > 7 ||
+    startingColumnInt < 0 || startingColumnInt > 7 ||
+    endingColumnInt < 0 || endingColumnInt > 7) {
+
+        cout << "Move out of bounds!" << endl;
+        return;
+    }
+
+
+    Piece selectedPiece = board[startingRowInt][startingColumnInt];
+    board[startingRowInt][startingColumnInt] = Piece();
+    board[endingRowInt][endingColumnInt] = selectedPiece;
+    return;
 }
 
 int mainMenu() {
-    // cout << "Testing" << rows[1] << endl;
-    
+
     string userResponse;
     while(1) {
         int userResponseInt;
@@ -75,6 +125,20 @@ int mainMenu() {
     }
 }
 
+void displayHelpMenu(){
+    cout << "HELP MENU" << endl;
+    cout << "The format for your moves should be similar to this: e2,e4" << endl;
+    cout << "The above command moves whatever piece is on e2 onto the square e4." << endl;
+    cout << "You can exit the program at any time by typing 'exit'" << endl;
+    //TODO: Add instructions for saving and loading
+    return;
+}
+
+/*
+    * sets up the board in the starting position with all pieces on their starting squares.
+    * Input: none
+    * Output: The board, represented by a vector of vectors [row][column]
+*/
 vector<vector<Piece>> initializeBoard() {
     vector<vector<Piece>> board(8, vector<Piece>(8));
     //White side
@@ -115,64 +179,76 @@ vector<vector<Piece>> initializeBoard() {
     return board;
 }
 
-void displayBoard(vector<vector<Piece>> board) {
-    cout << "[bR] [bN] [bB] [bQ] [bK] [bB] [bN] [bR]" << endl;
-    cout << "[bP] [bP] [bP] [bP] [bP] [bP] [bP] [bP]" << endl;
-    cout << "[  ] [  ] [  ] [  ] [  ] [  ] [  ] [  ]" << endl;
-    cout << "[  ] [  ] [  ] [  ] [  ] [  ] [  ] [  ]" << endl;
-    cout << "[  ] [  ] [  ] [  ] [  ] [  ] [  ] [  ]" << endl;
-    cout << "[  ] [  ] [  ] [  ] [  ] [  ] [  ] [  ]" << endl;
-    cout << "[wP] [wP] [wP] [wP] [wP] [wP] [wP] [wP]" << endl;
-    cout << "[wR] [wN] [wB] [wQ] [wK] [wB] [wN] [wR]" << endl;
 
-    for (int i = 0; i <= 7; i++) {
+
+void displayBoard(vector<vector<Piece>> board) {
+    cout << endl;
+    for (int i = 7; i >= 0; i--) {
+        cout << (i + 1) << " ";
         for (int j = 0; j <= 7; j++) {
-            Piece currentPiece = board[i][j];
-            currentPiece.print();
+            bool lightSquare = (i + j) % 2 == 0;
+
+            if (lightSquare)
+            {
+                std::cout << "\033[48;5;180m"; // light background
+            }
+            else 
+            {
+                std::cout << "\033[48;5;94m"; // dark background
+            }
+            // cout << " ";
+            board[i][j].print();
+            // cout << " ";
         }
+        std::cout << "\033[0m";
         cout << endl;
     }
+    cout << "   a  b  c  d  e  f  g  h" << endl;
+    cout << endl;
+
 }
 
+//End initialize functions
 
+//Begin main
 int main() {
     //Initialize variables at the start of the game
+    SetConsoleOutputCP(CP_UTF8);
 
     int stillPlaying = 1;
     string currentPlayer = "white";
     vector<vector<Piece>> playBoard = initializeBoard();
-    displayBoard(playBoard);
-    // //They call their dictionaries maps in C++, weird.
-    // map<int, vector<char>> rows = {
-    //     { {1}, {'a', 'b', 'c', 'd', 'e', 'f', 'g'} }, 
-    //     { {2}, {'a', 'b', 'c', 'd', 'e', 'f', 'g'} }, 
-    //     { {3}, {'a', 'b', 'c', 'd', 'e', 'f', 'g'} }, 
-    //     { {4}, {'a', 'b', 'c', 'd', 'e', 'f', 'g'} }, 
-    //     { {5}, {'a', 'b', 'c', 'd', 'e', 'f', 'g'} }, 
-    //     { {6}, {'a', 'b', 'c', 'd', 'e', 'f', 'g'} }, 
-    //     { {7}, {'a', 'b', 'c', 'd', 'e', 'f', 'g'} }, 
-    //     { {8}, {'a', 'b', 'c', 'd', 'e', 'f', 'g'} },   
-    // };
 
-
-    
+    //Begin main menu
     int mainMenuUserChoice = mainMenu();
     if (mainMenuUserChoice == 0) 
     {
         cout << "Ending program";
+
         return 0;
     }
     string userResponse; //TODO: change this to a string to search for valid commands
     while (stillPlaying) { 
-        displayBoard(); //Show the board to the player
+        displayBoard(playBoard); //Show the board to the player
         cout << "Current player: " << currentPlayer << endl; //Display the current player who can move next
-        cin >> userResponse;
+        userResponse = getUserMove();
 
-        if (userResponse == "0") //Failsafe: have a way to end the code
+        if (userResponse == "0" || userResponse == "exit") //Failsafe: have a way to end the code
         {
             cout << "Ending program" << endl;
             break;
         }
+        if (userResponse == "help")
+        {
+            displayHelpMenu();
+            continue;
+        }
+        if (userResponse.size() < 4) {
+            cout << "Invalid move format. Try e2e4 or e2 e4" << endl;
+            continue;
+        }
+
+        movePiece(userResponse, playBoard);
         currentPlayer = switchPlayer(currentPlayer);
     }
     return 0;
