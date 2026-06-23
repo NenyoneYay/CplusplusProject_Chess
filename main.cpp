@@ -88,8 +88,8 @@ string getUserMove() {
 
     string userResponse;
     // bool validMove = true; //TODO: change this to false when we add move logic
-    cout << "Type in your desired move and hit enter" << endl;
-    getline(cin, userResponse);
+    cout << "Type in your desired move and hit enter TESTING" << endl;
+    cin >> userResponse;
     // do {
     //     validMove = checkValidMove(userResponse);
     //     cout << endl;
@@ -269,6 +269,9 @@ int main() {
         return 0;
     }
     string userResponse; //TODO: change this to a string to search for valid commands
+
+
+
     while (stillPlaying) { 
         displayBoard(playBoard); //Show the board to the player
         cout << "Current player: " << currentPlayer << endl; //Display the current player who can move next
