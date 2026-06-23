@@ -7,6 +7,7 @@ This project simulates a game of Chess in the terminal of your computer.
 Steps to build and/or run the software:
 
 1. It should just run if you open the folder and double-click "chess.exe"
+2. Don't mess with the save.txt file, it will probably break the save/load feature if you do
 
 Instructions for using the software:
 
