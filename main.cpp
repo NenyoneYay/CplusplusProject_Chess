@@ -20,7 +20,59 @@ string switchPlayer(string player) {
     }
 }
 
-bool checkValidMove(string userResponse) {
+bool checkValidMove(string userMove, string player, vector<vector<Piece>>& board) {
+    
+    if (userMove.size() < 4) {
+        throw std::invalid_argument("Invalid move string: '" + userMove + "'");
+    }
+
+    //Convert the string into move format "e2 e4"
+    std::string startSquare = userMove.substr(0, 2);
+    std::string endSquare   = userMove.substr(userMove.length() - 2, 2);
+
+    char startingColumnChar = startSquare[0];
+    char startingRowChar    = startSquare[1];
+
+    char endingColumnChar   = endSquare[0];
+    char endingRowChar      = endSquare[1];
+
+    int startingRowInt = startingRowChar - '1';
+    int endingRowInt = endingRowChar - '1';
+
+    int startingColumnInt = startingColumnChar - 'a';
+    int endingColumnInt = endingColumnChar - 'a';
+
+    Piece selectedPiece = board[startingColumnChar][startingRowChar];
+
+    //Check to make sure move is in the bounds of the chess board
+    if (startingRowInt < 0 || startingRowInt > 7 ||
+    endingRowInt < 0 || endingRowInt > 7 ||
+    startingColumnInt < 0 || startingColumnInt > 7 ||
+    endingColumnInt < 0 || endingColumnInt > 7) {
+
+        cout << "Move out of bounds!" << endl;
+        return false;
+    }
+
+
+
+    //Check to make sure the selected piece is the right color (don't move black pieces on whites turn)
+    if (selectedPiece.type == 'w')
+    {
+        if (player == "black")
+        {
+            cout << "Cannot move white piece on black's turn" << endl;
+            return false;
+        }
+    }
+    if (selectedPiece.type == 'b')
+    {
+        if (player == "white")
+        {
+            cout << "Cannot move black piece on white's turn" << endl;
+        }
+    }
+
     return true;
 }
 
@@ -35,29 +87,18 @@ bool checkValidMove(string userResponse) {
 string getUserMove() {
 
     string userResponse;
-    bool validMove = true; //TODO: change this to false when we add move logic
+    // bool validMove = true; //TODO: change this to false when we add move logic
     cout << "Type in your desired move and hit enter" << endl;
     getline(cin, userResponse);
-    do {
-        validMove = checkValidMove(userResponse);
-        cout << endl;
-    } while (!validMove);
+    // do {
+    //     validMove = checkValidMove(userResponse);
+    //     cout << endl;
+    // } while (!validMove);
     // cout << "Testing: " << userResponse;
     return userResponse;
 }
 
 void movePiece(string userMove, vector<vector<Piece>>& board) {
-    // char startingRowChar;
-    // char startingColumnChar;
-    // char endingRowChar;
-    // char endingColumnChar;
-
-    // userMove.erase(remove(userMove.begin(), userMove.end(), ' '), userMove.end());
-    // //Set the values of starting/ending row/column to the inputs from the user
-    // char startingRowChar = userMove[1];
-    // char startingColumnChar = userMove[0];
-    // char endingRowChar = userMove[3];
-    // char endingColumnChar = userMove[2];
 
     if (userMove.size() < 4) {
         throw std::invalid_argument("Invalid move string: '" + userMove + "'");
@@ -245,6 +286,11 @@ int main() {
         }
         if (userResponse.size() < 4) {
             cout << "Invalid move format. Try e2e4 or e2 e4" << endl;
+            continue;
+        }
+
+        if (!checkValidMove(userResponse, currentPlayer, playBoard))
+        {
             continue;
         }
 
