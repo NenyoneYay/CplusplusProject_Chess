@@ -5,10 +5,80 @@
 #include <algorithm>
 #include "Piece.h"
 #include <windows.h>
+#include <fstream>
+#include <sstream>
 
 using namespace std;
 
+void saveGame(const vector<vector<Piece>>& board, string currentPlayer)
+{
+    ofstream file ("save.txt");
+    if (!file.is_open())
+    {
+        cout << "Error opening file!" << endl;
+        return;
+    }
 
+    file << currentPlayer << endl;
+
+    for (int i = 0; i < 8; i++)
+    {
+        for (int j = 0; j < 8; j++)
+        {
+            char type = board[i][j].getType();
+            char color = board[i][j].getColor();
+
+            if (type == ' ')
+            {
+                file << ". . ";
+            }
+            else
+            {
+                file << type << " " << color << " ";
+            }
+        }
+        file << endl;
+    }
+    file.close();
+    cout << "Game saved. Type 'exit' to close the game, or..." << endl;
+}
+
+vector<vector<Piece>> loadGame(string& currentPlayer)
+{
+    ifstream file("save.txt");
+
+    if (!file.is_open())
+    {
+        cout << "Error opening save file!" << endl;
+        return vector<vector<Piece>>(8, vector<Piece>(8));
+    }
+    getline(file, currentPlayer);
+    vector<vector<Piece>> board(8, vector<Piece>(8));
+    string line;
+
+    for (int i = 0; i < 8; i++)
+    {
+        getline(file, line);
+
+        stringstream ss(line);
+
+        for (int j = 0; j < 8; j++)
+        {
+            char type, color;
+            ss >> type >> color;
+
+            if (type == '.' || color == '.')
+            {
+                board[i][j] = Piece(); // empty square
+            }
+            else
+            {
+                board[i][j] = Piece(type, color);
+            }
+        }
+    }
+    return board;
+}
 //Initialize functions
 string switchPlayer(string player) {
     if (player == "white") {
@@ -20,8 +90,9 @@ string switchPlayer(string player) {
     }
 }
 
-bool checkValidMove(string userMove, string player, vector<vector<Piece>>& board) {
-    
+bool checkValidMove(string userMove, string player, const vector<vector<Piece>>& board) {
+    // cout << "Testing: I'm about to check if that move is valid" << endl;
+
     if (userMove.size() < 4) {
         throw std::invalid_argument("Invalid move string: '" + userMove + "'");
     }
@@ -29,6 +100,8 @@ bool checkValidMove(string userMove, string player, vector<vector<Piece>>& board
     //Convert the string into move format "e2 e4"
     std::string startSquare = userMove.substr(0, 2);
     std::string endSquare   = userMove.substr(userMove.length() - 2, 2);
+
+    // cout << "Testing: We have breached the first rock" << endl;
 
     char startingColumnChar = startSquare[0];
     char startingRowChar    = startSquare[1];
@@ -42,7 +115,21 @@ bool checkValidMove(string userMove, string player, vector<vector<Piece>>& board
     int startingColumnInt = startingColumnChar - 'a';
     int endingColumnInt = endingColumnChar - 'a';
 
-    Piece selectedPiece = board[startingColumnChar][startingRowChar];
+    //Check to make sure move is in the bounds of the chess board
+    if (startingRowInt < 0 || startingRowInt > 7 ||
+    endingRowInt < 0 || endingRowInt > 7 ||
+    startingColumnInt < 0 || startingColumnInt > 7 ||
+    endingColumnInt < 0 || endingColumnInt > 7) {
+
+        cout << "Move out of bounds!" << endl;
+        return false;
+    }
+
+    // cout << "Testing: we have breached the second rock" << endl;
+
+    const Piece& selectedPiece = board[startingRowInt][startingColumnInt];
+
+    // cout << "We have selected a piece that is '" << selectedPiece.getColor() << "'" << endl;
 
     //Check to make sure move is in the bounds of the chess board
     if (startingRowInt < 0 || startingRowInt > 7 ||
@@ -57,7 +144,7 @@ bool checkValidMove(string userMove, string player, vector<vector<Piece>>& board
 
 
     //Check to make sure the selected piece is the right color (don't move black pieces on whites turn)
-    if (selectedPiece.type == 'w')
+    if (selectedPiece.getColor() == 'w')
     {
         if (player == "black")
         {
@@ -65,12 +152,18 @@ bool checkValidMove(string userMove, string player, vector<vector<Piece>>& board
             return false;
         }
     }
-    if (selectedPiece.type == 'b')
+    if (selectedPiece.getColor() == 'b')
     {
         if (player == "white")
         {
             cout << "Cannot move black piece on white's turn" << endl;
+            return false;
         }
+    }
+
+    if (selectedPiece.getColor() == ' ')
+    {
+        cout << "There isn't a piece to move on " << startSquare << endl;
     }
 
     return true;
@@ -88,8 +181,8 @@ string getUserMove() {
 
     string userResponse;
     // bool validMove = true; //TODO: change this to false when we add move logic
-    cout << "Type in your desired move and hit enter TESTING" << endl;
-    cin >> userResponse;
+    cout << "Type in your desired move and hit enter" << endl;
+    getline(cin, userResponse);
     // do {
     //     validMove = checkValidMove(userResponse);
     //     cout << endl;
@@ -150,14 +243,14 @@ int mainMenu() {
         cout << "1: Start game: Hotseat" << endl;
         cout << "2: Start game: CPU (coming soon)" << endl;
         cout << "3: Load game from file (coming soon)" << endl;
-        cin >> userResponse;
+        getline(cin, userResponse);
         //Make sure they put in a number
         try {
             userResponseInt = stoi(userResponse);
         }
         catch (invalid_argument) {
             cout << "Error: " << userResponse << " is not a number. Please try again." << endl;
-            cin;
+            // cin;
             continue;
         }
         //Turn the users response into an int and return that int
@@ -222,7 +315,7 @@ vector<vector<Piece>> initializeBoard() {
 
 
 
-void displayBoard(vector<vector<Piece>> board) {
+void displayBoard(const vector<vector<Piece>>& board) {
     cout << endl;
     for (int i = 7; i >= 0; i--) {
         cout << (i + 1) << " ";
@@ -258,8 +351,8 @@ int main() {
 
     int stillPlaying = 1;
     string currentPlayer = "white";
-    vector<vector<Piece>> playBoard = initializeBoard();
-
+    // vector<vector<Piece>> playBoard = initializeBoard();
+    vector<vector<Piece>> playBoard;
     //Begin main menu
     int mainMenuUserChoice = mainMenu();
     if (mainMenuUserChoice == 0) 
@@ -268,10 +361,17 @@ int main() {
 
         return 0;
     }
+    if (mainMenuUserChoice == 1)
+    {
+        cout << "Starting game" << endl;
+        playBoard = initializeBoard();
+    }
+    if (mainMenuUserChoice == 3)
+    {
+        playBoard = loadGame(currentPlayer);
+    }
+
     string userResponse; //TODO: change this to a string to search for valid commands
-
-
-
     while (stillPlaying) { 
         displayBoard(playBoard); //Show the board to the player
         cout << "Current player: " << currentPlayer << endl; //Display the current player who can move next
@@ -287,6 +387,12 @@ int main() {
             displayHelpMenu();
             continue;
         }
+        if (userResponse == "save")
+        {
+            saveGame(playBoard, currentPlayer);
+            continue;
+        }
+        // cout << "Testing: " << userResponse << endl;
         if (userResponse.size() < 4) {
             cout << "Invalid move format. Try e2e4 or e2 e4" << endl;
             continue;

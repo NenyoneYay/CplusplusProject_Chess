@@ -9,7 +9,9 @@ public:
     Piece();
     Piece(char t, char c);
 
-    void print();
+    void print() const;
+    char getColor() const;
+    char getType() const;
 };
 
 #endif

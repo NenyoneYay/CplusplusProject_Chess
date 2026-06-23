@@ -13,7 +13,17 @@ Piece::Piece(char t, char c) {
     color = c;
 }
 
-void Piece::print() {
+char Piece::getColor() const
+{
+    return color;
+}
+
+char Piece::getType() const
+{
+    return type;
+}
+
+void Piece::print() const {
     if (type == ' ') {
         std::cout << "   ";
         return;
@@ -21,7 +31,7 @@ void Piece::print() {
 
     if (color == 'w') {
         switch (type) {
-        case 'p': std::cout << "\033[38;5;231m ♙      "; break;
+        case 'p': std::cout << "\033[38;5;231m ♙ "; break;
         case 'r': std::cout << "\033[38;5;231m ♖ "; break;
         case 'n': std::cout << "\033[38;5;231m ♘ "; break;
         case 'b': std::cout << "\033[38;5;231m ♗ "; break;
