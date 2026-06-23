@@ -10,6 +10,10 @@
 
 using namespace std;
 
+/*
+    * Saves the game to a text file titled save.txt
+    * Input: board state, current player string
+*/
 void saveGame(const vector<vector<Piece>>& board, string currentPlayer)
 {
     ofstream file ("save.txt");
@@ -43,6 +47,11 @@ void saveGame(const vector<vector<Piece>>& board, string currentPlayer)
     cout << "Game saved. Type 'exit' to close the game, or..." << endl;
 }
 
+/*
+    * Loads the game from the text file titled save.txt
+    * Input: current player (to update currentPlayer)
+    * Output: play board with pieces laid out according to save.txt
+*/
 vector<vector<Piece>> loadGame(string& currentPlayer)
 {
     ifstream file("save.txt");
@@ -90,6 +99,11 @@ string switchPlayer(string player) {
     }
 }
 
+/*
+    * Checks the move against multiple rules to make sure the player's move is valid
+    * Inputs: the users move, the current player, and the board state
+    * Output: a boolean that is true if the move is valid, false if not.
+*/
 bool checkValidMove(string userMove, string player, const vector<vector<Piece>>& board) {
     // cout << "Testing: I'm about to check if that move is valid" << endl;
 
@@ -191,6 +205,10 @@ string getUserMove() {
     return userResponse;
 }
 
+/*
+    * Moves the piece from one square of the board to another
+    * Input: the users desired move, the play board
+*/
 void movePiece(string userMove, vector<vector<Piece>>& board) {
 
     if (userMove.size() < 4) {
@@ -230,6 +248,10 @@ void movePiece(string userMove, vector<vector<Piece>>& board) {
     return;
 }
 
+/* 
+    * Displays the main menu that shows before the game starts.
+    * Output: an int value specified by the player that corresponds to the desired menu choice
+*/
 int mainMenu() {
 
     string userResponse;
@@ -259,12 +281,15 @@ int mainMenu() {
     }
 }
 
+/* 
+    Displays the help menu if the user types help
+*/
 void displayHelpMenu(){
     cout << "HELP MENU" << endl;
     cout << "The format for your moves should be similar to this: e2,e4" << endl;
     cout << "The above command moves whatever piece is on e2 onto the square e4." << endl;
     cout << "You can exit the program at any time by typing 'exit'" << endl;
-    //TODO: Add instructions for saving and loading
+    cout << "You can save the game at any time by typing 'save'" << endl;
     return;
 }
 
@@ -314,7 +339,10 @@ vector<vector<Piece>> initializeBoard() {
 }
 
 
-
+/*
+    * Creates a visual board with pieces in their places
+    * Input: play board
+*/
 void displayBoard(const vector<vector<Piece>>& board) {
     cout << endl;
     for (int i = 7; i >= 0; i--) {
