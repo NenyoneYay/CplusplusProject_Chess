@@ -1,9 +1,9 @@
 white
-r w n w b w q w k w b w n w r w 
-p w p w . . p w . . p w p w p w 
-. . . . p w . . . . . . . . . . 
-. . . . . . . . p w . . . . q b 
-. . . . . . . . p b . . . . . . 
+r w n w b w q w k w b w . . r w 
+p w p w p w p w . . q b p w p w 
+. . . . . . . . . . . . . . . . 
+. . . . . . . . p w . . . . . . 
+. . . . . . . . n w . . . . . . 
 . . . . . . . . . . . . . . . . 
 p b p b p b p b . . p b p b p b 
 r b n b b b . . k b b b n b r b 

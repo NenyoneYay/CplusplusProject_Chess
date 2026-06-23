@@ -1,8 +1,8 @@
 # CSE 310 - Sprint Time Log
 
-Name:
+Name: Michael Loftus
 
-Sprint #:
+Sprint #: 4
 
 ## Instructions
 
@@ -26,11 +26,16 @@ The expected minimum amount of time each Sprint for each category is as follows:
 
 |Date      |Start Time|Category|Description                                 |Total Minutes|
 |----------|----------|:------:|--------------------------------------------|:-----------:|
-|          |          |        |                                            |             |
-|          |          |        |                                            |             |
-|          |          |        |                                            |             |
-|          |          |        |                                            |             |
-|          |          |        |                                            |             |
+|   6/16   |   6:00   |    IM  |  Began project, setup environment          |    60       |
+|   6/18   |   6:00   |    IM  | Began writing Piece class, board, menu     |    180      |
+|   6/21   |   5:00   |    IM  |  Created visuals, basic movement           |    180      |
+|   6/22   |   7:00   |    IM  |  Added movement logic, save/load           |    180      |
+|   6/8    |   3:00   |    TP  |  Team project: Began integration           |    60       |
+|   6/10   |   3:00   |    TP  |  Team project: Worked on presentation      |    60       |
+|   6/17   |   3:00   |    TP  |Team project: Worked on modular HTML inserts|    60       |
+|   6/8    |   2:00   |    MTG |  Planning Meeting                          |    60       |
+|   6/17   |   2:00   |    MTG |  Team Review Meeting                       |    60       |
+|   6/18   |   2:00   |    MTG |  Individual Review Meeting                 |    60       |
 |          |          |        |                                            |             |
 
 _Note: Add more rows as needed._
@@ -40,6 +45,8 @@ _Note: Add more rows as needed._
 |Categroy                       |Total Time (Hours:Minutes)|
 |-------------------------------|:------------------------:|
 |IM - Individual Module         |                          |
-|TP - Team Project              |                          |
-|MTG - Class Meetings           |                          |
-|**TOTAL**                      |                          |
+|TP - Team Project              |           3:00           |
+|MTG - Class Meetings           |           3:00           |
+|**TOTAL**                      |          16:00           |
+
+(I was out of town for one of the class days for my brother's mission homecoming :D )
